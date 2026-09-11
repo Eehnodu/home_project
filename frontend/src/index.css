@@ -66,6 +66,18 @@
     /* ── Skeleton ──────────────────────────── */
     --skeleton-base: 228 228 231;
     --skeleton-shine: 250 250 250;
+
+    /* ── Code — 문제와 해결의 코드 조각 (GitHub 라이트 계열) ── */
+    --code-bg: #f6f8fa;
+    --code-bar: #eef1f4;
+    --code-text: #1f2328;
+    --code-keyword: #cf222e;
+    --code-string: #0a3069;
+    --code-number: #0550ae;
+    --code-comment: #6e7781;
+    --code-function: #8250df;
+    --code-builtin: #953800;
+    --code-variable: #0550ae;
   }
 
   .dark {
@@ -128,6 +140,18 @@
     /* ── Skeleton ──────────────────────────── */
     --skeleton-base: 39 39 42;
     --skeleton-shine: 63 63 70;
+
+    /* ── Code (GitHub 다크 계열) ──────────── */
+    --code-bg: #0d1117;
+    --code-bar: #161b22;
+    --code-text: #e6edf3;
+    --code-keyword: #ff7b72;
+    --code-string: #a5d6ff;
+    --code-number: #79c0ff;
+    --code-comment: #8b949e;
+    --code-function: #d2a8ff;
+    --code-builtin: #ffa657;
+    --code-variable: #ffa657;
   }
 }
 
@@ -274,4 +298,56 @@ body {
     background-image: none;
     background-color: rgb(var(--skeleton-base));
   }
+}
+
+/*
+ * 문제와 해결의 코드 조각. highlight.js 가 붙이는 hljs-* 클래스에 색을 준다.
+ * 색은 위의 --code-* 토큰이라 라이트 · 다크를 따라간다.
+ */
+.code-block {
+  background: var(--code-bg);
+}
+.code-block-bar {
+  background: var(--code-bar);
+  border-bottom: 1px solid rgb(var(--border));
+}
+.code-block .hljs {
+  color: var(--code-text);
+}
+.code-block .hljs-keyword,
+.code-block .hljs-selector-tag,
+.code-block .hljs-literal,
+.code-block .hljs-type {
+  color: var(--code-keyword);
+}
+.code-block .hljs-string,
+.code-block .hljs-regexp,
+.code-block .hljs-subst {
+  color: var(--code-string);
+}
+.code-block .hljs-number,
+.code-block .hljs-meta,
+.code-block .hljs-attr,
+.code-block .hljs-attribute {
+  color: var(--code-number);
+}
+.code-block .hljs-comment,
+.code-block .hljs-quote {
+  color: var(--code-comment);
+  font-style: italic;
+}
+.code-block .hljs-title,
+.code-block .hljs-title.function_,
+.code-block .hljs-section {
+  color: var(--code-function);
+}
+.code-block .hljs-built_in,
+.code-block .hljs-title.class_,
+.code-block .hljs-params {
+  color: var(--code-builtin);
+}
+.code-block .hljs-variable,
+.code-block .hljs-template-variable,
+.code-block .hljs-property {
+  color: var(--code-variable);
 }
