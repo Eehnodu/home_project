@@ -1,0 +1,101 @@
+import { GroupProps } from "@/types/client/sidebar";
+import SubLink from "./subLink";
+import { useLocation } from "react-router-dom";
+import { useState, useRef } from "react";
+import { ChevronDownIcon } from "lucide-react";
+
+const GroupLink = ({ item, collapsed }: GroupProps) => {
+  const { pathname } = useLocation();
+
+  const isChildActive = item.children.some((child) => {
+    if (child.end) {
+      return pathname === child.to;
+    }
+    return pathname.startsWith(child.to);
+  });
+
+  const [open, setOpen] = useState(true);
+  const [hovered, setHovered] = useState(false);
+  const [flyoutTop, setFlyoutTop] = useState(0);
+  const iconRef = useRef<HTMLDivElement>(null);
+  const hideTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const Icon = item?.icon;
+
+  const cancelHide = () => {
+    if (hideTimer.current) {
+      clearTimeout(hideTimer.current);
+      hideTimer.current = null;
+    }
+  };
+
+  const scheduleHide = () => {
+    hideTimer.current = setTimeout(() => setHovered(false), 100);
+  };
+
+  const handleMouseEnter = () => {
+    cancelHide();
+    if (iconRef.current) {
+      const rect = iconRef.current.getBoundingClientRect();
+      setFlyoutTop(rect.top);
+    }
+    setHovered(true);
+  };
+
+  return (
+    <div className="pb-2 text-left">
+      <div
+        ref={iconRef}
+        onMouseEnter={collapsed ? handleMouseEnter : undefined}
+        onMouseLeave={collapsed ? scheduleHide : undefined}
+      >
+        <button
+          type="button"
+          onClick={collapsed ? undefined : () => setOpen((prev) => !prev)}
+          className={`w-full flex items-center h-[44px] pl-4 pr-3 gap-3 overflow-hidden text-sm font-medium transition-colors duration-200 rounded-lg
+          ${collapsed ? "cursor-default" : "cursor-pointer"}
+          ${isChildActive ? "text-white" : "text-neutral-400 hover:bg-white/5 hover:text-white/90"}`}
+        >
+          {Icon && <Icon className="h-4 w-4 shrink-0" />}
+          <span
+            className={`whitespace-nowrap transition-all duration-300 ease-in-out ${collapsed ? "opacity-0 -translate-x-2" : "opacity-100 translate-x-0"}`}
+          >
+            {item?.title}
+          </span>
+          <div
+            className={`flex-1 h-px bg-neutral-600 transition-all duration-300 ease-in-out ${collapsed ? "opacity-0" : "opacity-100"}`}
+          />
+          <ChevronDownIcon
+            className={`h-3 w-3 shrink-0 transition-all duration-300 ease-in-out ${open ? "rotate-0" : "-rotate-90"} ${collapsed ? "opacity-0" : "opacity-100"}`}
+          />
+        </button>
+      </div>
+
+      <div
+        className={`flex flex-col gap-1 overflow-hidden transition-all duration-300 ease-in-out ${!collapsed && open ? "max-h-96 opacity-100" : "max-h-0 opacity-0"}`}
+      >
+        {item?.children.map((link) => (
+          <SubLink key={link.to} {...link} nested collapsed={collapsed} />
+        ))}
+      </div>
+
+      {collapsed && hovered && (
+        <div
+          className="fixed z-50 min-w-[160px] rounded-lg border border-[#292524] bg-[#1c1917] py-1 shadow-lg dark:border-zinc-700 dark:bg-zinc-950"
+          style={{ top: flyoutTop, left: 68 }}
+          onMouseEnter={cancelHide}
+          onMouseLeave={scheduleHide}
+        >
+          <div className="px-3 py-1.5 text-xs font-medium text-neutral-500 whitespace-nowrap">
+            {item.title}
+          </div>
+          {item.children.map((link) => (
+            <SubLink key={link.to} {...link} collapsed={false} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default GroupLink;
