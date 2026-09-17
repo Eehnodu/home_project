@@ -71,6 +71,15 @@ npm install
 npm run dev
 ```
 
+## 배포
+
+홈서버(라즈베리파이 · Linux)에서 운영합니다.
+
+- 프론트는 로컬에서 `npm run build` 한 산출물을 서버에 올리고 nginx 가 정적 파일로 서빙합니다. 서버에서는 빌드하지 않습니다.
+- 백엔드는 uvicorn 을 systemd 서비스로 상시 실행하고, nginx 가 `/api` 요청을 리버스 프록시합니다. 챗봇 스트리밍 응답은 프록시 버퍼링을 끄도록 응답 헤더로 지정합니다.
+- MySQL · Redis 는 같은 서버에서 동작합니다. 서버 호스트명으로 prod 환경을 판별해 `prod_*` 설정을 읽습니다.
+- 업로드 이미지는 `backend/media/` 에 저장되고 nginx 가 그대로 서빙합니다.
+
 ## 환경변수
 
 `backend/.env.example` 과 `frontend/.env.example` 을 각각 `.env` 로 복사해 채웁니다. 실제 `.env` 는 커밋되지 않습니다.
