@@ -4,12 +4,21 @@
 방문자가 포트폴리오에 대해 물어볼 수 있는 AI 챗봇을 한 저장소에 담았습니다.
 홈서버에 배포해 운영합니다.
 
+운영 중인 사이트의 코드를 공개용으로 정리한 저장소입니다. 파일마다 맨 위에 역할 주석을 달았고, 환경 파일(`.env`)과 빌드 산출물은 들어 있지 않습니다.
+[base_template](https://github.com/Eehnodu/base_template) 에서 시작했습니다.
+
 ## 무엇을 하는가
 
 **포트폴리오 (`/`, `/projects`)**
 
 - Info · Tech Stack · Approach · Projects 네 섹션을 전부 DB 에서 읽습니다. 글을 고칠 때 코드를 배포하지 않아도 되게 하기 위해서입니다.
+- 화면 구성은 헤더형과 사이드바형 두 가지이고 관리자가 Info 편집에서 고릅니다. 사이드바형은 네 섹션과 펼친 프로젝트를 한 페이지에 이어 보여 주고, `/stack` · `/approach` · `/projects` 는 해당 섹션으로 보냅니다.
+- 프로젝트는 구분(자사 · 수주 · 사이드) 배지와 함께 보이고, 상세에는 항목마다 문제 · 원인 · 해결과 코드 조각(문법 색 표시)을 담은 "문제와 해결" 절이 있습니다.
 - 프로젝트 목록은 카테고리로 거를 수 있습니다. 사이트 링크를 공유하면 썸네일이 보이도록 og:image 를 넣었습니다.
+
+**CS 모아 (`/cs`)**
+
+- 자료구조 · 알고리즘 · 네트워크 · 운영체제 · 데이터베이스 · 디자인 패턴 주제의 목차와 라우트만 있습니다. 세부 항목 본문은 아직 비어 있고, 포트폴리오 화면에서 링크하지 않습니다.
 
 **관리자 (`/admin`)**
 
@@ -47,10 +56,11 @@ backend/
 ├── migrate.sh       alembic upgrade + autogenerate
 └── run.sh           uvicorn :8000
 
-frontend/src/container/
-├── client/portfolio/   메인 · 프로젝트 목록
-├── client/cs/          챗봇 위젯
-└── admin/              portfolio(info · techstack · approach · project) · chatbot(setting · log · stats)
+frontend/src/
+├── container/client/portfolio/   헤더형 메인 · 프로젝트 목록, sidebar/ 사이드바형 페이지
+├── container/client/cs/          CS 모아 (목차 · 빈 본문)
+├── container/admin/              portfolio(info · techstack · approach · project) · chatbot(setting · log · stats)
+└── component/client/portfolio/chatbot/   챗봇 위젯
 ```
 
 ## 실행
@@ -63,12 +73,12 @@ pip install -r requirements.txt
 ./migrate.sh
 ./insertAdmin.sh
 ./seedPortfolio.sh --all
-./run.sh
+./run.sh                # http://localhost:8000
 
 # frontend
 cd frontend
 npm install
-npm run dev
+npm run dev             # http://localhost:3000
 ```
 
 ## 배포
